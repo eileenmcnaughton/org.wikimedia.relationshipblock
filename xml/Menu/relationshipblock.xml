@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<menu>
+  <item>
+    <path>civicrm/relationshipblock/edit</path>
+    <page_callback>CRM_Relationshipblock_Form_Inline_RelationshipBlock</page_callback>
+    <title>RelationshipBlock</title>
+    <access_arguments>access CiviCRM</access_arguments>
+  </item>
+  <item>
+    <path>civicrm/relationshipblock/view</path>
+    <page_callback>CRM_Relationshipblock_Page_RelationshipBlock</page_callback>
+    <title>RelationshipBlock</title>
+    <access_arguments>access CiviCRM</access_arguments>
+  </item>
+</menu>
