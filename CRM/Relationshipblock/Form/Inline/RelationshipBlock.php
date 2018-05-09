@@ -11,7 +11,7 @@ class CRM_Relationshipblock_Form_Inline_RelationshipBlock extends CRM_Contact_Fo
   public function buildQuickForm() {
     foreach (CRM_Relationshipblock_Utils_RelationshipBlock::getDisplayedRelationshipTypes() as $relationshipType) {
       $params = [];
-      if (in_array(['Individual', 'Household', 'Organizion'],$relationshipType['contact_type_b'])) {
+      if (in_array(['Individual', 'Household', 'Organizion'], $relationshipType['contact_type_b'])) {
         $params['contact_type'] = $relationshipType['contact_type_b'];
       }
       $props = array(
@@ -22,14 +22,6 @@ class CRM_Relationshipblock_Form_Inline_RelationshipBlock extends CRM_Contact_Fo
       );
       $this->addEntityRef('rel_' . $relationshipType['id'], $relationshipType['label_a_b'], $props, FALSE);
     }
-
-    $this->addButtons(array(
-      array(
-        'type' => 'submit',
-        'name' => E::ts('Submit'),
-        'isDefault' => TRUE,
-      ),
-    ));
 
     // export form elements
     $this->assign('elementNames', $this->getRenderableElementNames());
