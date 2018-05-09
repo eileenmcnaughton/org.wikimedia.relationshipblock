@@ -153,29 +153,13 @@ function relationshipblock_civicrm_preProcess($formName, &$form) {
  */
 function relationshipblock_civicrm_pageRun(&$page) {
   if (get_class($page) === 'CRM_Contact_Page_View_Summary') {
-    if(($contactID = $page->getVar('_contactId')) !== FALSE) {
-      try{
-        $contactType = civicrm_api3('contact', 'getvalue', array('id' => $contactID, 'return' => 'contact_type'));
-
-        $isDisplayFieldID = civicrm_api3('CustomField', 'getvalue', [
-          'name' => 'is_relationship_block_on_summary',
-          'return' => 'id',
-        ]);
-        $displayedRelationships = civicrm_api3('RelationshipType', 'get', [
-          'custom_' . $isDisplayFieldID => 1,
-        ]);
-        if (!$displayedRelationships['count']) {
-          // Nothing to do here. Move along.
-          return;
-        }
-
-        $existingRelationships = civicrm_api3('Relationship', 'get', [
-          'relationship_type_id' => ['IN' => array_keys($displayedRelationships['values'])],
-        ]);
-       $page->assign('contactID', $contactID);
-       CRM_Core_Region::instance('contact-basic-info-right')->add(array(
-         'template' => "CRM/Relationshipblock/ContactSummaryBlock.tpl"
-       ));
+    if (($contactID = $page->getVar('_contactId')) !== FALSE) {
+      try {
+        $existingRelationships = CRM_Relationshipblock_Utils_RelationshipBlock::getExistingRelationships($contactID);
+        $page->assign('existingRelationships', $existingRelationships);
+        CRM_Core_Region::instance('contact-basic-info-right')->add(array(
+          'template' => "CRM/Relationshipblock/ContactSummaryBlock.tpl"
+        ));
 
       }
       catch(Exception $e) {

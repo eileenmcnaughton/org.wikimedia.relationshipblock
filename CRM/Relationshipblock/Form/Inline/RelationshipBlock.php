@@ -37,10 +37,15 @@ class CRM_Relationshipblock_Form_Inline_RelationshipBlock extends CRM_Contact_Fo
   }
 
   public function postProcess() {
-    $values = $this->exportValues();
-    $relatedContactID = $values['rel'];
-    civicrm_api3('Relationship', 'create', ['contact_id_a' => 203, 'contact_id_b' => $relatedContactID]);
-    parent::postProcess();
+    // Fixme: Do real postprocess
+    //    $values = $this->exportValues();
+    //    $relatedContactID = $values['rel'];
+    //    civicrm_api3('Relationship', 'create', ['contact_id_a' => $this->_contactId, 'contact_id_b' => $relatedContactID]);
+    $this->ajaxResponse['updateTabs'] = array(
+      '#tab_rel' => CRM_Contact_BAO_Contact::getCountComponent('rel', $this->_contactId),
+    );
+    $this->log();
+    $this->response();
   }
 
   /**
