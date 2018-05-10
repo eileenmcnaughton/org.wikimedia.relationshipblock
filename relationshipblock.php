@@ -179,13 +179,5 @@ function relationshipblock_civicrm_pageRun(&$page) {
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_navigationMenu
  */
 function relationshipblock_civicrm_navigationMenu(&$menu) {
-  _relationshipblock_civix_insert_navigation_menu($menu, 'Contacts', array(
-    'label' => E::ts('New relationship block'),
-    'name' => 'rel_block',
-    'url' => 'civicrm/relationshipblock',
-    'permission' => 'access CiviCRM',
-    'operator' => 'OR',
-    'separator' => 0,
-  ));
   _relationshipblock_civix_navigationMenu($menu);
 }
