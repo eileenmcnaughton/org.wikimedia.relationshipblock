@@ -156,8 +156,7 @@ function relationshipblock_civicrm_pageRun(&$page) {
     if (($contactID = $page->getVar('_contactId')) !== FALSE) {
       try {
         if (CRM_Relationshipblock_Utils_RelationshipBlock::getDisplayedRelationshipTypes($contactID)) {
-          $existingRelationships = CRM_Relationshipblock_Utils_RelationshipBlock::getExistingRelationships($contactID);
-          $page->assign('existingRelationships', $existingRelationships);
+          CRM_Relationshipblock_Page_Inline_RelationshipBlock::addKeyRelationshipsBlock($page, $contactID);
           CRM_Core_Region::instance('contact-basic-info-right')->add(array(
             'template' => "CRM/Relationshipblock/ContactSummaryBlock.tpl"
           ));

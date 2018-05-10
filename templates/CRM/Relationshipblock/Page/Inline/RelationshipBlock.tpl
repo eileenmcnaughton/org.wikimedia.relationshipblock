@@ -9,7 +9,7 @@
             <div class="crm-content">{$existingRelationship.relation_display_name}</div>
           {/foreach}
         {else}
-          <div class="crm-label">{ts}Key Relationships{/ts}</div>
+          <div class="crm-label">{$keyRelationshipLabel}</div>
           <div class="crm-content"></div>
         {/if}
       </div>
