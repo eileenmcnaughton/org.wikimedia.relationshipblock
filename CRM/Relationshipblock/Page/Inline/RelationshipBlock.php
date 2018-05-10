@@ -12,6 +12,7 @@ class CRM_Relationshipblock_Page_Inline_RelationshipBlock extends CRM_Core_Page 
     }
 
     $existingRelationships = CRM_Relationshipblock_Utils_RelationshipBlock::getExistingRelationships($contactID);
+    $this->assign('contactId', $contactID);
     $this->assign('existingRelationships', $existingRelationships);
     parent::run();
   }
