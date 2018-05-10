@@ -14,6 +14,9 @@ class CRM_Relationshipblock_Form_Inline_RelationshipBlock extends CRM_Contact_Fo
       if (in_array(['Individual', 'Household', 'Organizion'], $relationshipType['contact_type_b'])) {
         $params['contact_type'] = $relationshipType['contact_type_b'];
       }
+      if (!empty($relationshipType['contact_sub_type_b'])) {
+        $params['contact_sub_type'] = $relationshipType['contact_sub_type_b'];
+      }
       $props = array(
         'api' => array('params' => $params),
         'create' => TRUE,
