@@ -38,7 +38,7 @@ class CRM_Relationshipblock_Utils_RelationshipBlock {
    * @return array
    */
   public static function getExistingRelationships($contactID) {
-    $displayedRelationships = self::getDisplayedRelationshipTypes();
+    $displayedRelationships = self::getDisplayedRelationshipTypes($contactID);
     if (empty($displayedRelationships)) {
       // Nothing to do here. Move along.
       return [];
@@ -63,9 +63,13 @@ class CRM_Relationshipblock_Utils_RelationshipBlock {
   }
 
   /**
+   * Get key relationship types valid for a given contact.
+   *
+   * @param $contactId FIXME
+   *
    * @return array
    */
-  public static function getDisplayedRelationshipTypes() {
+  public static function getDisplayedRelationshipTypes($contactId) {
     if (!isset(\Civi::$statics[__CLASS__]['displayed_relationship_types'])) {
       $isDisplayFieldID = civicrm_api3('CustomField', 'getvalue', [
         'name' => 'is_relationship_block_on_summary',

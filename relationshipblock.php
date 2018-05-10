@@ -155,12 +155,13 @@ function relationshipblock_civicrm_pageRun(&$page) {
   if (get_class($page) === 'CRM_Contact_Page_View_Summary') {
     if (($contactID = $page->getVar('_contactId')) !== FALSE) {
       try {
-        $existingRelationships = CRM_Relationshipblock_Utils_RelationshipBlock::getExistingRelationships($contactID);
-        $page->assign('existingRelationships', $existingRelationships);
-        CRM_Core_Region::instance('contact-basic-info-right')->add(array(
-          'template' => "CRM/Relationshipblock/ContactSummaryBlock.tpl"
-        ));
-
+        if (CRM_Relationshipblock_Utils_RelationshipBlock::getDisplayedRelationshipTypes($contactID)) {
+          $existingRelationships = CRM_Relationshipblock_Utils_RelationshipBlock::getExistingRelationships($contactID);
+          $page->assign('existingRelationships', $existingRelationships);
+          CRM_Core_Region::instance('contact-basic-info-right')->add(array(
+            'template' => "CRM/Relationshipblock/ContactSummaryBlock.tpl"
+          ));
+        }
       }
       catch(Exception $e) {
         // oohhh we have an error. Give up hope.
