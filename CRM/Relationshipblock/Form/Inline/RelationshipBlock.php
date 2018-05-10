@@ -9,10 +9,13 @@ use CRM_Relationshipblock_ExtensionUtil as E;
  */
 class CRM_Relationshipblock_Form_Inline_RelationshipBlock extends CRM_Contact_Form_Inline {
   public function buildQuickForm() {
-    foreach (CRM_Relationshipblock_Utils_RelationshipBlock::getDisplayedRelationshipTypes() as $relationshipType) {
+    foreach (CRM_Relationshipblock_Utils_RelationshipBlock::getDisplayedRelationshipTypes($this->_contactId) as $relationshipType) {
       $params = [];
       if (in_array(['Individual', 'Household', 'Organizion'], $relationshipType['contact_type_b'])) {
         $params['contact_type'] = $relationshipType['contact_type_b'];
+      }
+      if (!empty($relationshipType['contact_sub_type_b'])) {
+        $params['contact_sub_type'] = $relationshipType['contact_sub_type_b'];
       }
       $props = array(
         'api' => array('params' => $params),
