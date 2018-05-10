@@ -137,13 +137,13 @@ function relationshipblock_civicrm_entityTypes(&$entityTypes) {
 // --- Functions below this ship commented out. Uncomment as required. ---
 
 /**
- * Implements hook_civicrm_preProcess().
- *
- * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_preProcess
- *
-function relationshipblock_civicrm_preProcess($formName, &$form) {
-
-} // */
+ * Implements hook_civicrm_postProcess().
+ */
+function relationshipblock_civicrm_postProcess($formName, &$form) {
+  if ($formName === 'CRM_Contact_Form_Relationship') {
+    $form->ajaxResponse['reloadBlocks'][] = '#crm-relblock-content';
+  }
+}
 
 /**
  * Implementation of hook_civicrm_managed
@@ -156,8 +156,7 @@ function relationshipblock_civicrm_pageRun(&$page) {
     if (($contactID = $page->getVar('_contactId')) !== FALSE) {
       try {
         if (CRM_Relationshipblock_Utils_RelationshipBlock::getDisplayedRelationshipTypes($contactID)) {
-          $existingRelationships = CRM_Relationshipblock_Utils_RelationshipBlock::getExistingRelationships($contactID);
-          $page->assign('existingRelationships', $existingRelationships);
+          CRM_Relationshipblock_Page_Inline_RelationshipBlock::addKeyRelationshipsBlock($page, $contactID);
           CRM_Core_Region::instance('contact-basic-info-right')->add(array(
             'template' => "CRM/Relationshipblock/ContactSummaryBlock.tpl"
           ));
@@ -180,13 +179,5 @@ function relationshipblock_civicrm_pageRun(&$page) {
  * @link http://wiki.civicrm.org/confluence/display/CRMDOC/hook_civicrm_navigationMenu
  */
 function relationshipblock_civicrm_navigationMenu(&$menu) {
-  _relationshipblock_civix_insert_navigation_menu($menu, 'Contacts', array(
-    'label' => E::ts('New relationship block'),
-    'name' => 'rel_block',
-    'url' => 'civicrm/relationshipblock',
-    'permission' => 'access CiviCRM',
-    'operator' => 'OR',
-    'separator' => 0,
-  ));
   _relationshipblock_civix_navigationMenu($menu);
 }

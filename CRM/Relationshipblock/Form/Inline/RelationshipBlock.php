@@ -8,22 +8,25 @@ use CRM_Relationshipblock_ExtensionUtil as E;
  * @see https://wiki.civicrm.org/confluence/display/CRMDOC/QuickForm+Reference
  */
 class CRM_Relationshipblock_Form_Inline_RelationshipBlock extends CRM_Contact_Form_Inline {
+
+  /**
+   * Form for editing key relationships
+   */
   public function buildQuickForm() {
-    foreach (CRM_Relationshipblock_Utils_RelationshipBlock::getDisplayedRelationshipTypes($this->_contactId) as $relationshipType) {
+    foreach (CRM_Relationshipblock_Utils_RelationshipBlock::getDisplayedRelationshipTypes($this->_contactId) as $key => $relationshipType) {
       $params = [];
-      if (in_array(['Individual', 'Household', 'Organizion'], $relationshipType['contact_type_b'])) {
-        $params['contact_type'] = $relationshipType['contact_type_b'];
+      list($a, $b) = explode('_', $relationshipType['dir']);
+      if (!empty($relationshipType["contact_type_$b"]) && in_array($relationshipType["contact_type_$b"], ['Individual', 'Household', 'Organizion'])) {
+        $params['contact_type'] = $relationshipType["contact_type_$b"];
       }
-      if (!empty($relationshipType['contact_sub_type_b'])) {
-        $params['contact_sub_type'] = $relationshipType['contact_sub_type_b'];
+      if (!empty($relationshipType["contact_sub_type_$b"])) {
+        $params['contact_sub_type'] = $relationshipType["contact_sub_type_$b"];
       }
       $props = array(
         'api' => array('params' => $params),
         'create' => TRUE,
-        'context' => 'Create',
-        'entity' => 'Contact',
       );
-      $this->addEntityRef('rel_' . $relationshipType['id'], $relationshipType['label_a_b'], $props, FALSE);
+      $this->addEntityRef($key, $relationshipType['label'], $props, FALSE);
     }
 
     // export form elements
@@ -31,11 +34,37 @@ class CRM_Relationshipblock_Form_Inline_RelationshipBlock extends CRM_Contact_Fo
     parent::buildQuickForm();
   }
 
+  /**
+   * Save relationships
+   *
+   * @throws \CiviCRM_API3_Exception
+   */
   public function postProcess() {
-    // Fixme: Do real postprocess
-    //    $values = $this->exportValues();
-    //    $relatedContactID = $values['rel'];
-    //    civicrm_api3('Relationship', 'create', ['contact_id_a' => $this->_contactId, 'contact_id_b' => $relatedContactID]);
+    $values = $this->exportValues();
+    $relationshipTypes = CRM_Relationshipblock_Utils_RelationshipBlock::getDisplayedRelationshipTypes($this->_contactId);
+    $existingRelationships = CRM_Relationshipblock_Utils_RelationshipBlock::getExistingRelationships($this->_contactId);
+    foreach ($relationshipTypes as $key => $relType) {
+      // End old relationships
+      if (!empty($existingRelationships[$key]) && $existingRelationships[$key]['other_contact_id'] != CRM_Utils_Array::value($key, $values)) {
+        civicrm_api3('Relationship', 'create', [
+          'id' => $existingRelationships[$key]['id'],
+          'end_date' => 'now',
+          'is_active' => 0,
+        ]);
+      }
+      // Create new relationships
+      $existingRelationship = CRM_Utils_Array::value($key, $existingRelationships);
+      if (!empty($values[$key]) && (!$existingRelationship || $existingRelationship['other_contact_id'] != $values[$key])) {
+        list($a, $b) = explode('_', $relType['dir']);
+        civicrm_api3('Relationship', 'create', [
+          'relationship_type_id' => $relType['id'],
+          "contact_id_$a" => $this->_contactId,
+          "contact_id_$b" => $values[$key],
+          'start_date' => 'now',
+          'is_active' => 1,
+        ]);
+      }
+    }
     $this->ajaxResponse['updateTabs'] = array(
       '#tab_rel' => CRM_Contact_BAO_Contact::getCountComponent('rel', $this->_contactId),
     );
@@ -44,13 +73,17 @@ class CRM_Relationshipblock_Form_Inline_RelationshipBlock extends CRM_Contact_Fo
   }
 
   /**
-   * Get defaults
+   * Get existing relationships for form
    */
   public function setDefaultValues() {
     $defaults = [];
+    $relationshipTypes = CRM_Relationshipblock_Utils_RelationshipBlock::getDisplayedRelationshipTypes($this->_contactId);
+    $relationshipTypes = CRM_Utils_Array::rekey($relationshipTypes, 'id');
     $existingRelationships = CRM_Relationshipblock_Utils_RelationshipBlock::getExistingRelationships($this->_contactId);
     foreach ($existingRelationships as $existingRelationship) {
-      $defaults['rel_' . $existingRelationship['relationship_type_id']] = $existingRelationship['other_contact_id'];
+      $relType = $relationshipTypes[$existingRelationship['relationship_type_id']];
+      $dir = $relType['bi'] ? $relType['dir'] : $existingRelationship['dir'];
+      $defaults[$relType['id'] . '_' . $dir] = $existingRelationship['other_contact_id'];
     }
     return $defaults;
   }
