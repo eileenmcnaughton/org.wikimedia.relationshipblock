@@ -6,9 +6,10 @@
         <div class="crm-summary-row">
           <div class="crm-label">{$existingRelationship.relationship_type|escape}</div>
           <div class="crm-content">
-            <a href="{crmURL p='civicrm/contact/view' q="reset=1&cid=`$existingRelationship.other_contact_id`"}" title="{ts}view contact{/ts}">
-              {$existingRelationship.relation_display_name|escape}
-            </a>
+            {foreach from=$existingRelationship.contacts item=contact key=i name=rel}
+              <a href="{crmURL p='civicrm/contact/view' q="reset=1&cid=`$contact.contact_id`"}" title="{ts escape='html'}view contact{/ts}">
+                {$contact.display_name|escape}</a>{if not $smarty.foreach.rel.last},{/if}
+            {/foreach}
           </div>
         </div>
       {/foreach}
