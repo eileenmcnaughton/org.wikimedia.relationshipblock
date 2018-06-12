@@ -8,11 +8,6 @@ any configured relationship type with a UI similar to the employer field.
 
 When the field is edited the relationship is updated.
 
-Note that this works like the employer field in that there is an expectation
-of only one relationship of this type. Do not use this field for relationships
-where you expect a contact to have many.
-
-
 The extension is licensed under [AGPL-3.0](LICENSE.txt).
 
 ## Requirements
@@ -31,7 +26,3 @@ Once installed the extension will do nothing until you select one or more relati
 - Navigate to **Administer -> Customize Data & Screens -> Relationship Types** and click edit on a desired relationship type.
 - Select "Display block on contact summary." for that relationship type.
 - Now you can visit a contact to view and edit their key relationships.
-
-## Known Issues
-
-Per above - this is envisaged for relationships where only one is expected.
