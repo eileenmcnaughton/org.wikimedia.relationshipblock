@@ -26,7 +26,3 @@ Once installed the extension will do nothing until you select one or more relati
 - Navigate to **Administer -> Customize Data & Screens -> Relationship Types** and click edit on a desired relationship type.
 - Select "Display block on contact summary." for that relationship type.
 - Now you can visit a contact to view and edit their key relationships.
-
-## Known Issues
-
-If a contact has dozens or hundreds of key relationships this block will get extremely large!
