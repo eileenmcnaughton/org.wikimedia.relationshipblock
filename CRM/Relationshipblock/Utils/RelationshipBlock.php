@@ -29,7 +29,7 @@ class CRM_Relationshipblock_Utils_RelationshipBlock {
     $ret = [];
     foreach ($existingRelationships['values'] as $rel) {
       $relationshipType = $displayedRelationships[$rel['relationship_type_id']];
-      $dir = ($relationshipType['bi'] || $rel['contact_id_a'] == $contactID) ? 'a_b' : 'b_a';
+      $dir = $rel['contact_id_a'] == $contactID ? 'a_b' : 'b_a';
       $key = $rel['relationship_type_id'] . '_' . $dir;
       list($a, $b) = explode('_', $dir);
       $ret[$key] = isset($ret[$key]) ? $ret[$key] : [];
