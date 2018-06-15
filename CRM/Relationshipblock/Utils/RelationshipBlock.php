@@ -21,7 +21,9 @@ class CRM_Relationshipblock_Utils_RelationshipBlock {
       'is_active' => 1,
       'contact_id_a' => $contactID,
       'contact_id_b' => $contactID,
-      'return' => ['id', 'relationship_type_id', 'contact_id_a', 'contact_id_b', 'contact_id_a.display_name', 'contact_id_b.display_name'],
+      'return' => ['id', 'relationship_type_id', 'contact_id_a', 'contact_id_b',
+        'contact_id_a.display_name', 'contact_id_b.display_name', 'contact_id_a.is_deceased',
+        'contact_id_b.is_deceased'],
       'options' => ['limit' => 0, 'or' => [['contact_id_a', 'contact_id_b']]],
     ]);
     $ret = [];
@@ -40,6 +42,7 @@ class CRM_Relationshipblock_Utils_RelationshipBlock {
         'contact_id' => $rel["contact_id_$b"],
         'relationship_id' => $rel['id'],
         'display_name' => $rel["contact_id_$b.display_name"],
+        'is_deceased' => $rel["contact_id_$b.is_deceased"],
       ];
     }
     return $ret;
