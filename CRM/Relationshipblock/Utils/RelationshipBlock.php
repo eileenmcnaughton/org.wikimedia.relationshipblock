@@ -29,9 +29,13 @@ class CRM_Relationshipblock_Utils_RelationshipBlock {
     $ret = [];
     foreach ($existingRelationships['values'] as $rel) {
       $relationshipType = $displayedRelationships[$rel['relationship_type_id']];
-      $dir = ($relationshipType['bi'] || $rel['contact_id_a'] == $contactID) ? 'a_b' : 'b_a';
-      $key = $rel['relationship_type_id'] . '_' . $dir;
+      $dir = $rel['contact_id_a'] == $contactID ? 'a_b' : 'b_a';
       list($a, $b) = explode('_', $dir);
+      // Make all bidirectional relationships appear as the A side to make the form processing simpler
+      if ($relationshipType['bi']) {
+        $dir = 'a_b';
+      }
+      $key = $rel['relationship_type_id'] . '_' . $dir;
       $ret[$key] = isset($ret[$key]) ? $ret[$key] : [];
       $ret[$key] += [
         'relationship_type_id' => $rel['relationship_type_id'],
