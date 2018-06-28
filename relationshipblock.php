@@ -181,3 +181,22 @@ function relationshipblock_civicrm_pageRun(&$page) {
 function relationshipblock_civicrm_navigationMenu(&$menu) {
   _relationshipblock_civix_navigationMenu($menu);
 }
+
+/**
+ * Implements hook_civicrm_contactSummaryBlocks().
+ *
+ * @link https://github.com/civicrm/org.civicrm.contactsummary
+ */
+function relationshipblock_civicrm_contactSummaryBlocks(&$blocks) {
+  // Provide our own group for this block to visually distinguish it on the contact summary editor.
+  $blocks['relationshipblock'] = CRM_Utils_Array::value('relationshipblock', $blocks, [
+    'title' => ts('Relationships'),
+    'icon' => 'fa-user-circle',
+  ]);
+  $blocks['relationshipblock']['blocks']['relationshipblock'] = [
+    'title' => ts('Key Relationships'),
+    'tpl_file' => 'CRM/Relationshipblock/ContactSummaryBlock.tpl',
+    'sample' => [ts('Relationship %1', [1 => 1]), ts('Relationship %1', [1 => 2]), ts('Relationship %1', [1 => 3])],
+    'edit' => 'civicrm/admin/reltype?reset=1',
+  ];
+}
