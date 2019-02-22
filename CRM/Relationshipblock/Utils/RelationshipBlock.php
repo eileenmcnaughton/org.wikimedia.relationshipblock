@@ -23,11 +23,12 @@ class CRM_Relationshipblock_Utils_RelationshipBlock {
       'contact_id_b' => $contactID,
       'return' => ['id', 'relationship_type_id', 'contact_id_a', 'contact_id_b',
         'contact_id_a.display_name', 'contact_id_b.display_name', 'contact_id_a.is_deceased',
-        'contact_id_b.is_deceased'],
+        'contact_id_b.is_deceased', 'end_date'],
       'options' => ['limit' => 0, 'sort' => 'relationship_type_id.label_a_b ASC', 'or' => [['contact_id_a', 'contact_id_b']]],
     ]);
     $ret = [];
     foreach ($existingRelationships['values'] as $rel) {
+      if ( !isset($rel['end_date']) || ($rel['end_date'] < $now )) {
       $relationshipType = $displayedRelationships[$rel['relationship_type_id']];
       $dir = $rel['contact_id_a'] == $contactID ? 'a_b' : 'b_a';
       list($a, $b) = explode('_', $dir);
@@ -48,6 +49,7 @@ class CRM_Relationshipblock_Utils_RelationshipBlock {
         'display_name' => $rel["contact_id_$b.display_name"],
         'is_deceased' => $rel["contact_id_$b.is_deceased"],
       ];
+     }
     }
     return $ret;
   }
