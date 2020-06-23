@@ -40,7 +40,7 @@ class CRM_Relationshipblock_Utils_RelationshipBlock {
     ]);
     $ret = [];
     foreach ($existingRelationships['values'] as $rel) {
-      if (!isset($rel['end_date']) || $rel['end_date'] < date('Y-m-d')) {
+      if (!isset($rel['end_date']) || $rel['end_date'] > date('Y-m-d')) {
         $relationshipType = $displayedRelationships[$rel['relationship_type_id']];
         $dir = $rel['contact_id_a'] == $contactID ? 'a_b' : 'b_a';
         list($a, $b) = explode('_', $dir);
