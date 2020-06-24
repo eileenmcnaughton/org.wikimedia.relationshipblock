@@ -54,7 +54,7 @@ class CRM_Relationshipblock_Upgrader extends CRM_Relationshipblock_Upgrader_Base
         'name' => 'relationship_block_exclude_expired',
         'label' => E::ts('Exclude expired relationships'),
         'data_type' => 'Boolean',
-        'default_value' => 0,
+        'default_value' => 1,
         'html_type' => 'Radio',
         'required' => 1,
       ]);
