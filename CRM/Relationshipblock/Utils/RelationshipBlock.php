@@ -31,6 +31,7 @@ class CRM_Relationshipblock_Utils_RelationshipBlock {
         'contact_id_a.is_deceased',
         'contact_id_b.is_deceased',
         'end_date',
+        'start_date',
       ],
       'options' => [
         'limit' => 0,
@@ -38,9 +39,30 @@ class CRM_Relationshipblock_Utils_RelationshipBlock {
         'or' => [['contact_id_a', 'contact_id_b']],
       ],
     ]);
+    $exclude_expired_field_id = civicrm_api3('CustomField', 'getvalue', [
+      'name' => 'relationship_block_exclude_expired',
+      'return' => 'id',
+    ]);
+    $exclude_pending_field_id = civicrm_api3('CustomField', 'getvalue', [
+      'name' => 'relationship_block_exclude_pending',
+      'return' => 'id',
+    ]);
     $ret = [];
     foreach ($existingRelationships['values'] as $rel) {
-      if (!isset($rel['end_date']) || $rel['end_date'] > date('Y-m-d')) {
+      // Only include expired and pending relationships, if they are configred
+      // to be displayed for the relationship type.
+      if (
+        (
+          empty($displayedRelationships[$rel['relationship_type_id']]['custom_' . $exclude_expired_field_id])
+          || !isset($rel['end_date'])
+          || $rel['end_date'] > date('Y-m-d')
+        )
+        && (
+          empty($displayedRelationships[$rel['relationship_type_id']]['custom_' . $exclude_pending_field_id])
+          || !isset($rel['start_date'])
+          || $rel['start_date'] < date('Y-m-d')
+        )
+      ) {
         $relationshipType = $displayedRelationships[$rel['relationship_type_id']];
         $dir = $rel['contact_id_a'] == $contactID ? 'a_b' : 'b_a';
         list($a, $b) = explode('_', $dir);
