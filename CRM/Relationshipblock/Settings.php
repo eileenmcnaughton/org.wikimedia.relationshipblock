@@ -35,11 +35,25 @@ class CRM_Relationshipblock_Settings {
   }
 
   /**
+   * @return array
+   */
+  public static function getContactFields(): array {
+    return CRM_Relationshipblock_Settings::getArray('relationshipblock_contact_fields');
+  }
+
+  /**
+   * @return array
+   */
+  public static function getRelationshipFields(): array {
+    return CRM_Relationshipblock_Settings::getArray('relationshipblock_relationship_fields');
+  }
+
+  /**
    * Get setting saved as serialized by separator.
    * @param string $settingName
    * @return array
    */
-  public static function getArray(string $settingName): array {
+  private static function getArray(string $settingName): array {
     $value = Civi::settings()->get($settingName);
     if ($value) {
       return explode(CRM_Core_DAO::VALUE_SEPARATOR, trim($value, CRM_Core_DAO::VALUE_SEPARATOR));
