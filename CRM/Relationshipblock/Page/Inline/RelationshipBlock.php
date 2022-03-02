@@ -27,6 +27,8 @@ class CRM_Relationshipblock_Page_Inline_RelationshipBlock extends CRM_Core_Page 
     $existingRelationships = CRM_Relationshipblock_Utils_RelationshipBlock::getExistingRelationships($contactId);
     $page->assign('contactId', $contactId);
     $page->assign('existingRelationships', $existingRelationships);
+    $page->assign('settingContactFields', CRM_Relationshipblock_Settings::getContactFields());
+    $page->assign('settingRelationshipFields', CRM_Relationshipblock_Settings::getRelationshipFields());
     if (!$existingRelationships) {
       $relTypes = CRM_Relationshipblock_Utils_RelationshipBlock::getDisplayedRelationshipTypes($contactId);
       $page->assign('keyRelationshipLabel', count($relTypes) > 1 ? E::ts('Key Relationships') : CRM_Utils_Array::first($relTypes)['label']);
