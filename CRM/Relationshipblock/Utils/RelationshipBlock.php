@@ -16,7 +16,7 @@ class CRM_Relationshipblock_Utils_RelationshipBlock {
       return [];
     }
     $displayedRelationships = CRM_Utils_Array::rekey($displayedRelationships, 'id');
-    $existingRelationships = civicrm_api3('Relationship', 'get', [
+    $params = [
       'relationship_type_id' => ['IN' => array_keys($displayedRelationships)],
       'is_active' => 1,
       'contact_id_a' => $contactID,
@@ -41,7 +41,8 @@ class CRM_Relationshipblock_Utils_RelationshipBlock {
         'sort' => 'relationship_type_id.label_a_b ASC',
         'or' => [['contact_id_a', 'contact_id_b']],
       ],
-    ]);
+    ];
+    $existingRelationships = civicrm_api3('Relationship', 'get', $params);
     $exclude_expired_field_id = civicrm_api3('CustomField', 'getvalue', [
       'name' => 'relationship_block_exclude_expired',
       'return' => 'id',
