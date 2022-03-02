@@ -88,6 +88,11 @@ class CRM_Relationshipblock_Utils_RelationshipBlock {
           'display_name' => $rel["contact_id_$b.display_name"],
           'is_deceased' => $rel["contact_id_$b.is_deceased"],
         ];
+        if (array_key_exists('api.Contact.getsingle', $rel)) {
+          foreach (CRM_Relationshipblock_Settings::getContactFields() as $field) {
+            $ret[$key]['contacts'][$rel["contact_id_$b"]][$field] = $rel['api.Contact.getsingle'][$field];
+          }
+        }
       }
     }
     return $ret;
@@ -101,7 +106,7 @@ class CRM_Relationshipblock_Utils_RelationshipBlock {
   private static function extendParams(array $params): array {
     $additionalContactFields = CRM_Relationshipblock_Settings::getContactFields();
     if ($additionalContactFields) {
-      $params['api.Contact.get'] = [
+      $params['api.Contact.getsingle'] = [
         'id' => '$value.contact_id_a',
         'return' => $additionalContactFields,
       ];
