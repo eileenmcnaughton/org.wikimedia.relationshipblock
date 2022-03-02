@@ -42,6 +42,7 @@ class CRM_Relationshipblock_Utils_RelationshipBlock {
         'or' => [['contact_id_a', 'contact_id_b']],
       ],
     ];
+    $params = self::extendParams($params);
     $existingRelationships = civicrm_api3('Relationship', 'get', $params);
     $exclude_expired_field_id = civicrm_api3('CustomField', 'getvalue', [
       'name' => 'relationship_block_exclude_expired',
@@ -90,6 +91,27 @@ class CRM_Relationshipblock_Utils_RelationshipBlock {
       }
     }
     return $ret;
+  }
+
+  /**
+   * Get additional fields based on extension configuration
+   * @param array $params
+   * @return array
+   */
+  private static function extendParams(array $params): array {
+    $additionalContactFields = CRM_Relationshipblock_Settings::getContactFields();
+    if ($additionalContactFields) {
+      $params['api.Contact.get'] = [
+        'id' => '$value.contact_id_a',
+        'return' => $additionalContactFields,
+      ];
+    }
+    $additionalRelationshipFields = CRM_Relationshipblock_Settings::getContactFields();
+    foreach ($additionalRelationshipFields as $field) {
+      $params['return'][] = $field;
+    }
+
+    return $params;
   }
 
   /**
