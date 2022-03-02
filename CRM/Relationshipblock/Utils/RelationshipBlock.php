@@ -106,7 +106,7 @@ class CRM_Relationshipblock_Utils_RelationshipBlock {
         'return' => $additionalContactFields,
       ];
     }
-    $additionalRelationshipFields = CRM_Relationshipblock_Settings::getContactFields();
+    $additionalRelationshipFields = CRM_Relationshipblock_Settings::getRelationshipFields();
     foreach ($additionalRelationshipFields as $field) {
       $params['return'][] = $field;
     }
