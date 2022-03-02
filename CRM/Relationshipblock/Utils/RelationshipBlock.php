@@ -93,6 +93,9 @@ class CRM_Relationshipblock_Utils_RelationshipBlock {
             $ret[$key]['contacts'][$rel["contact_id_$b"]][$field] = $rel['api.Contact.getsingle'][$field];
           }
         }
+        foreach (CRM_Relationshipblock_Settings::getRelationshipFields() as $field) {
+          $ret[$key]['contacts'][$rel["contact_id_$b"]][$field] = $rel[$field];
+        }
       }
     }
     return $ret;
