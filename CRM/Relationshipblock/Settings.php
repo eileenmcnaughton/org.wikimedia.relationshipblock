@@ -18,4 +18,18 @@ class CRM_Relationshipblock_Settings {
     return $fields;
   }
 
+  /**
+   * Get setting saved as serialized by separator.
+   * @param string $settingName
+   * @return array
+   */
+  public static function getArray(string $settingName): array {
+    $value = Civi::settings()->get($settingName);
+    if ($value) {
+      return explode(CRM_Core_DAO::VALUE_SEPARATOR, trim($value, CRM_Core_DAO::VALUE_SEPARATOR));
+    }
+
+    return [];
+  }
+
 }
