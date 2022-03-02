@@ -19,6 +19,22 @@ class CRM_Relationshipblock_Settings {
   }
 
   /**
+   * @return array
+   * @throws CiviCRM_API3_Exception
+   */
+  public static function relationshipFields(): array {
+    $result = civicrm_api3('Relationship', 'getfields', [
+      'api_action' => "get",
+    ]);
+    $fields = [];
+    foreach ($result['values'] as $field) {
+      $fields[$field['name']] = $field['title'];
+    }
+
+    return $fields;
+  }
+
+  /**
    * Get setting saved as serialized by separator.
    * @param string $settingName
    * @return array
