@@ -14,8 +14,10 @@
                 <a href="{crmURL p='civicrm/contact/view' q="reset=1&cid=`$contact.contact_id`"}" title="{ts escape='html'}view contact{/ts}">
                   {$contact.display_name|escape}</a>{if $contact.is_deceased} <span class="crm-contact-deceased">(deceased)</span>{/if}{if not $smarty.foreach.rel.last and $i neq 6},
                 {elseif $i eq 6}</span><span class="relblock-show-more">... <a href="#">{ts}(more){/ts}</a></span><span style="display:none">{/if}
-                  {foreach from=$settingContactFields item=field}
-                      <span>{$contact[$field]}, </span>
+                  {foreach from=$settingFields item=field name=settingFields}
+                    {if !empty($contact[$field])}
+                      <span>{$contact[$field]}{if $smarty.foreach.settingFields.last}.{else}, {/if}</span>
+                    {/if}
                   {/foreach}
                 {assign var='i' value=$i+1}
               {/foreach}
