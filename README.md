@@ -3,7 +3,7 @@ org.wikimedia.relationshipblock
 
 ![Screenshot](/images/relationship_block.gif)
 
-This extension adds a block to the contact summary that allows editing of 
+This extension adds a block to the contact summary that allows editing of
 any configured relationship type with a UI similar to the employer field.
 
 When the field is edited the relationship is updated.
@@ -26,6 +26,12 @@ Once installed the extension will do nothing until you select one or more relati
 - Navigate to **Administer -> Customize Data & Screens -> Relationship Types** and click edit on a desired relationship type.
 - Select "Display block on contact summary." for that relationship type.
 - Now you can visit a contact to view and edit their key relationships.
+
+You can also display additional fields about contacts and relationships:
+
+- Navigate to **Administer -> Administration Console -> Relationship Block settings**.
+- Choose fields on *Contact fields* and/or *Relationship fields* settings and save.
+- Visit a contact to see more fields near to display name.
 
 ### Extras
 
