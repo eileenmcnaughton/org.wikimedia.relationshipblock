@@ -18,6 +18,7 @@
                     {if !empty($contact[$field])}
                       {$contact[$field]}{if !$smarty.foreach.settingFields.last}, {/if}
                     {/if}
+                    {if $smarty.foreach.settingFields.last}<br>{/if}
                   {/foreach}
                 {assign var='i' value=$i+1}
               {/foreach}
