@@ -16,7 +16,12 @@
                 {elseif $i eq 6}</span><span class="relblock-show-more">... <a href="#">{ts}(more){/ts}</a></span><span style="display:none">{/if}
                   {foreach from=$settingFields item=field name=settingFields}
                     {if !empty($contact[$field])}
-                      {$contact[$field]}{if !$smarty.foreach.settingFields.last}, {/if}
+                      {assign var='validEmail' value=$contact[$field]|filter_var:$smarty.const.FILTER_VALIDATE_EMAIL}
+                      {if $contact[$field] eq $validEmail}
+                         <a href="mailto:{$validEmail}" title="{ts}Click to send email{/ts}">{$validEmail}</a>{if !$smarty.foreach.settingFields.last}, {/if}
+                      {else}
+                        {$contact[$field]}{if !$smarty.foreach.settingFields.last}, {/if}
+                      {/if}
                     {/if}
                     {if $smarty.foreach.settingFields.last}<br>{/if}
                   {/foreach}
