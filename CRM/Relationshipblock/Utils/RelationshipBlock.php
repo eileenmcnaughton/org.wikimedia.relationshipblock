@@ -88,36 +88,7 @@ class CRM_Relationshipblock_Utils_RelationshipBlock {
           'display_name' => $rel["contact_id_$b.display_name"],
           'is_deceased' => $rel["contact_id_$b.is_deceased"],
         ];
-        if (array_key_exists('api.Contact.getsingle', $rel)) {
-          foreach (CRM_Relationshipblock_Settings::getContactFields() as $field) {
-            if (strpos($field, 'custom') === 0) {
-              $options = CRM_Contact_BAO_Contact::buildOptions($field);
-              if ($options) {
-                $ret[$key]['contacts'][$rel["contact_id_$b"]][$field] = $rel['api.Contact.getsingle'][$options[$field]];
-              }
-              else {
-                $ret[$key]['contacts'][$rel["contact_id_$b"]][$field] = $rel['api.Contact.getsingle'][$field];
-              }
-            }
-            else {
-              $ret[$key]['contacts'][$rel["contact_id_$b"]][$field] = $rel['api.Contact.getsingle'][$field];
-            }
-          }
-        }
-        foreach (CRM_Relationshipblock_Settings::getRelationshipFields() as $field) {
-          if (strpos($field, 'custom') === 0) {
-            $options = CRM_Contact_BAO_Contact::buildOptions($field);
-            if ($options) {
-              $ret[$key]['contacts'][$rel["contact_id_$b"]][$field] = $rel[$options[$field]];
-            }
-            else {
-              $ret[$key]['contacts'][$rel["contact_id_$b"]][$field] = $rel[$field];
-            }
-          }
-          else {
-            $ret[$key]['contacts'][$rel["contact_id_$b"]][$field] = $rel[$field];
-          }
-        }
+        self::extendContacts($ret, $rel, $key, $b);
       }
     }
     return $ret;
@@ -142,6 +113,47 @@ class CRM_Relationshipblock_Utils_RelationshipBlock {
     }
 
     return $params;
+  }
+
+  /**
+   * Extend contacts about additional fields from settings.
+   * Improve custom fields with options.
+   * @param $ret
+   * @param $rel
+   * @param $key
+   * @param $b
+   */
+  private static function extendContacts(&$ret, $rel, $key, $b): void {
+    if (array_key_exists('api.Contact.getsingle', $rel)) {
+      foreach (CRM_Relationshipblock_Settings::getContactFields() as $field) {
+        if (strpos($field, 'custom') === 0) {
+          $options = CRM_Contact_BAO_Contact::buildOptions($field);
+          if ($options) {
+            $ret[$key]['contacts'][$rel["contact_id_$b"]][$field] = $options[$rel['api.Contact.getsingle'][$field]];
+          }
+          else {
+            $ret[$key]['contacts'][$rel["contact_id_$b"]][$field] = $rel['api.Contact.getsingle'][$field];
+          }
+        }
+        else {
+          $ret[$key]['contacts'][$rel["contact_id_$b"]][$field] = $rel['api.Contact.getsingle'][$field];
+        }
+      }
+    }
+    foreach (CRM_Relationshipblock_Settings::getRelationshipFields() as $field) {
+      if (strpos($field, 'custom') === 0) {
+        $options = CRM_Contact_BAO_Contact::buildOptions($field);
+        if ($options) {
+          $ret[$key]['contacts'][$rel["contact_id_$b"]][$field] = $options[$rel[$field]];
+        }
+        else {
+          $ret[$key]['contacts'][$rel["contact_id_$b"]][$field] = $rel[$field];
+        }
+      }
+      else {
+        $ret[$key]['contacts'][$rel["contact_id_$b"]][$field] = $rel[$field];
+      }
+    }
   }
 
   /**
