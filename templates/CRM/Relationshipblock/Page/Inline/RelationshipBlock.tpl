@@ -17,6 +17,8 @@
                   {foreach from=$settingFields item=field name=settingFields}
                     {if !empty($contact[$field])}
                       {assign var='validEmail' value=$contact[$field]|filter_var:$smarty.const.FILTER_VALIDATE_EMAIL}
+                      {assign var='settingLabel' value=$settingLabels[$field]}
+                      {if $settingLabel}<em>{$settingLabel}:</em>{/if}
                       {if $contact[$field] eq $validEmail}
                          <a href="mailto:{$validEmail}" title="{ts}Click to send email{/ts}">{$validEmail}</a>{if !$smarty.foreach.settingFields.last}, {/if}
                       {else}
