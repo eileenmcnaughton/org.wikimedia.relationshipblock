@@ -43,4 +43,17 @@ return [
     'is_contact' => 0,
     'settings_pages' => ['relationshipblock' => ['weight' => 20]],
   ],
+  'relationshipblock_display_labels' => [
+    'name' => 'relationshipblock_display_labels',
+    'title' => E::ts('Display labels'),
+    'description' => E::ts('Decide whether before value will be displayed a label of field'),
+    'type' => 'Integer',
+    'html_type' => 'radio',
+    'options' => [0 => E::ts('No, only value of fields'), 1 => E::ts('Yes, each field has own label')],
+    'default' => 0,
+    'add' => '5.43',
+    'is_domain' => 1,
+    'is_contact' => 0,
+    'settings_pages' => ['relationshipblock' => ['weight' => 30]],
+  ],
 ];

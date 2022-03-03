@@ -35,6 +35,13 @@ class CRM_Relationshipblock_Settings {
   }
 
   /**
+   * @return int
+   */
+  public static function getDisplayLabels(): int {
+    return (int) Civi::settings()->get('relationshipblock_display_labels');
+  }
+
+  /**
    * @return array
    */
   public static function getContactFields(): array {
