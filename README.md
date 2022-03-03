@@ -30,8 +30,9 @@ Once installed the extension will do nothing until you select one or more relati
 You can also display additional fields about contacts and relationships:
 
 - Navigate to **Administer -> Administration Console -> Relationship Block settings**.
-- Choose fields on *Contact fields* and/or *Relationship fields* settings and save.
-- Visit a contact to see more fields near to display name.
+- Choose fields on *Contact fields* and/or *Relationship fields*.
+- Decide whether before value will be displayed a label of field: *Yes* or *No*.
+- Save settings and visit a contact to see more fields near to display name.
 
 ### Extras
 
