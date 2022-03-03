@@ -6,7 +6,7 @@ class CRM_Relationshipblock_Settings {
    * @return array
    * @throws CiviCRM_API3_Exception
    */
-  public static function contactFields(): array {
+  public static function contactFieldsList(): array {
     $result = civicrm_api3('Contact', 'getfields', [
       'api_action' => "get",
     ]);
@@ -22,7 +22,7 @@ class CRM_Relationshipblock_Settings {
    * @return array
    * @throws CiviCRM_API3_Exception
    */
-  public static function relationshipFields(): array {
+  public static function relationshipFieldsList(): array {
     $result = civicrm_api3('Relationship', 'getfields', [
       'api_action' => "get",
     ]);

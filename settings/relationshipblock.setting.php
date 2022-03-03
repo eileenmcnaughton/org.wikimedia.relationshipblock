@@ -15,7 +15,7 @@ return [
       'class' => 'huge crm-select2',
     ],
     'pseudoconstant' => [
-      'callback' => 'CRM_Relationshipblock_Settings::contactFields',
+      'callback' => 'CRM_Relationshipblock_Settings::contactFieldsList',
     ],
     'default' => '',
     'add' => '5.43',
@@ -35,7 +35,7 @@ return [
       'class' => 'huge crm-select2',
     ],
     'pseudoconstant' => [
-      'callback' => 'CRM_Relationshipblock_Settings::relationshipFields',
+      'callback' => 'CRM_Relationshipblock_Settings::relationshipFieldsList',
     ],
     'default' => '',
     'add' => '5.43',
