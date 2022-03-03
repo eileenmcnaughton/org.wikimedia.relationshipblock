@@ -16,7 +16,7 @@
                 {elseif $i eq 6}</span><span class="relblock-show-more">... <a href="#">{ts}(more){/ts}</a></span><span style="display:none">{/if}
                   {foreach from=$settingFields item=field name=settingFields}
                     {if !empty($contact[$field])}
-                      <span>{$contact[$field]}{if $smarty.foreach.settingFields.last}.{else}, {/if}</span>
+                      {$contact[$field]}{if !$smarty.foreach.settingFields.last}, {/if}
                     {/if}
                   {/foreach}
                 {assign var='i' value=$i+1}
