@@ -18,10 +18,11 @@
   <version>1.5</version>
   <develStage>stable</develStage>
   <compatibility>
-    <ver>5.38</ver>
+    <ver>5.45</ver>
   </compatibility>
-  <comments></comments>
+  <comments/>
   <civix>
     <namespace>CRM/Relationshipblock</namespace>
+    <format>22.05.2</format>
   </civix>
 </extension>
