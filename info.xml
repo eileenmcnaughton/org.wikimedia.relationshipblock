@@ -23,6 +23,14 @@
   <comments/>
   <civix>
     <namespace>CRM/Relationshipblock</namespace>
-    <format>22.05.2</format>
+    <format>23.02.1</format>
   </civix>
+  <classloader>
+    <psr0 prefix="CRM_" path="."/>
+    <psr4 prefix="Civi\" path="Civi"/>
+  </classloader>
+  <upgrader>CRM_Relationshipblock_Upgrader</upgrader>
+  <mixins>
+    <mixin>smarty-v2@1.0.0</mixin>
+  </mixins>
 </extension>
