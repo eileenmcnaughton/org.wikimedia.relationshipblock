@@ -16,7 +16,7 @@ class CRM_Relationshipblock_Utils_RelationshipBlock {
       return [];
     }
     $displayedRelationships = CRM_Utils_Array::rekey($displayedRelationships, 'id');
-    $existingRelationships = civicrm_api3('Relationship', 'get', [
+    $params = [
       'relationship_type_id' => ['IN' => array_keys($displayedRelationships)],
       'is_active' => 1,
       'contact_id_a' => $contactID,
@@ -41,7 +41,9 @@ class CRM_Relationshipblock_Utils_RelationshipBlock {
         'sort' => 'relationship_type_id.label_a_b ASC',
         'or' => [['contact_id_a', 'contact_id_b']],
       ],
-    ]);
+    ];
+    $params = self::extendParams($params);
+    $existingRelationships = civicrm_api3('Relationship', 'get', $params);
     $exclude_expired_field_id = civicrm_api3('CustomField', 'getvalue', [
       'name' => 'relationship_block_exclude_expired',
       'return' => 'id',
@@ -86,9 +88,72 @@ class CRM_Relationshipblock_Utils_RelationshipBlock {
           'display_name' => $rel["contact_id_$b.display_name"],
           'is_deceased' => $rel["contact_id_$b.is_deceased"],
         ];
+        self::extendContacts($ret, $rel, $key, $b);
       }
     }
     return $ret;
+  }
+
+  /**
+   * Get additional fields based on extension configuration
+   * @param array $params
+   * @return array
+   */
+  private static function extendParams(array $params): array {
+    $additionalContactFields = CRM_Relationshipblock_Settings::getContactFields();
+    if ($additionalContactFields) {
+      $params['api.Contact.getsingle'] = [
+        'id' => '$value.contact_id_a',
+        'return' => $additionalContactFields,
+      ];
+    }
+    $additionalRelationshipFields = CRM_Relationshipblock_Settings::getRelationshipFields();
+    foreach ($additionalRelationshipFields as $field) {
+      $params['return'][] = $field;
+    }
+
+    return $params;
+  }
+
+  /**
+   * Extend contacts about additional fields from settings.
+   * Improve custom fields with options.
+   * @param $ret
+   * @param $rel
+   * @param $key
+   * @param $b
+   */
+  private static function extendContacts(&$ret, $rel, $key, $b): void {
+    if (array_key_exists('api.Contact.getsingle', $rel)) {
+      foreach (CRM_Relationshipblock_Settings::getContactFields() as $field) {
+        if (strpos($field, 'custom') === 0) {
+          $options = CRM_Contact_BAO_Contact::buildOptions($field);
+          if ($options) {
+            $ret[$key]['contacts'][$rel["contact_id_$b"]][$field] = $options[$rel['api.Contact.getsingle'][$field]];
+          }
+          else {
+            $ret[$key]['contacts'][$rel["contact_id_$b"]][$field] = $rel['api.Contact.getsingle'][$field];
+          }
+        }
+        else {
+          $ret[$key]['contacts'][$rel["contact_id_$b"]][$field] = $rel['api.Contact.getsingle'][$field];
+        }
+      }
+    }
+    foreach (CRM_Relationshipblock_Settings::getRelationshipFields() as $field) {
+      if (strpos($field, 'custom') === 0) {
+        $options = CRM_Contact_BAO_Contact::buildOptions($field);
+        if ($options) {
+          $ret[$key]['contacts'][$rel["contact_id_$b"]][$field] = $options[$rel[$field]];
+        }
+        else {
+          $ret[$key]['contacts'][$rel["contact_id_$b"]][$field] = $rel[$field];
+        }
+      }
+      else {
+        $ret[$key]['contacts'][$rel["contact_id_$b"]][$field] = $rel[$field];
+      }
+    }
   }
 
   /**
