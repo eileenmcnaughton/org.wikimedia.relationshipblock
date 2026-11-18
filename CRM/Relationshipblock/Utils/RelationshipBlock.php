@@ -15,16 +15,9 @@ class CRM_Relationshipblock_Utils_RelationshipBlock {
       // Nothing to do here. Move along.
       return [];
     }
-    $displayedRelationships = CRM_Utils_Array::rekey($displayedRelationships, 'id');
-    $existingRelationships = civicrm_api3('Relationship', 'get', [
-      'relationship_type_id' => ['IN' => array_keys($displayedRelationships)],
-      'is_active' => 1,
-      'contact_id_a' => $contactID,
-      'contact_id_b' => $contactID,
-      'contact_id_a.is_deleted' => ['!=' => 1],
-      'contact_id_b.is_deleted' => ['!=' => 1],
-      'check_permissions' => TRUE,
-      'return' => [
+    $displayedRelationships = array_column($displayedRelationships, NULL, 'id');
+    $existingRelationships = \Civi\Api4\Relationship::get(TRUE)
+      ->addSelect(
         'id',
         'relationship_type_id',
         'contact_id_a',
@@ -34,24 +27,24 @@ class CRM_Relationshipblock_Utils_RelationshipBlock {
         'contact_id_a.is_deceased',
         'contact_id_b.is_deceased',
         'end_date',
-        'start_date',
-      ],
-      'options' => [
-        'limit' => 0,
-        'sort' => 'relationship_type_id.label_a_b ASC',
-        'or' => [['contact_id_a', 'contact_id_b']],
-      ],
-    ]);
-    $exclude_expired_field_id = civicrm_api3('CustomField', 'getvalue', [
-      'name' => 'relationship_block_exclude_expired',
-      'return' => 'id',
-    ]);
-    $exclude_pending_field_id = civicrm_api3('CustomField', 'getvalue', [
-      'name' => 'relationship_block_exclude_pending',
-      'return' => 'id',
-    ]);
+        'start_date'
+      )
+      ->addWhere('relationship_type_id', 'IN', array_keys($displayedRelationships))
+      ->addWhere('is_active', '=', TRUE)
+      ->addWhere('contact_id_a.is_deleted', '=', FALSE)
+      ->addWhere('contact_id_b.is_deleted', '=', FALSE)
+      ->addClause('OR', ['contact_id_a', '=', $contactID], ['contact_id_b', '=', $contactID])
+      ->addOrderBy('relationship_type_id.label_a_b')
+      ->execute();
+    $customFieldIds = \Civi\Api4\CustomField::get(FALSE)
+      ->addSelect('id', 'name')
+      ->addWhere('name', 'IN', ['relationship_block_exclude_expired', 'relationship_block_exclude_pending'])
+      ->execute()
+      ->column('id', 'name');
+    $exclude_expired_field_id = $customFieldIds['relationship_block_exclude_expired'] ?? NULL;
+    $exclude_pending_field_id = $customFieldIds['relationship_block_exclude_pending'] ?? NULL;
     $ret = [];
-    foreach ($existingRelationships['values'] as $rel) {
+    foreach ($existingRelationships as $rel) {
       // Only include expired and pending relationships, if they are configred
       // to be displayed for the relationship type.
       if (
